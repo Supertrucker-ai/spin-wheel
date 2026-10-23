@@ -3,7 +3,7 @@ const fs=require('fs'),path=require('path');const {chromium}=require('playwright
 const dir=__dirname,P=f=>fs.readFileSync(path.join(dir,'parts',f),'utf8');
 const EXE=process.env.CHROME||'/usr/bin/google-chrome';
 (async()=>{
-  const js=['store.js','colors.js','wheel.js','fx.js','app.js'].map(P).join('\n');
+  const js=['store.js','colors.js','wheel.js','fx.js','board.js','app.js'].map(P).join('\n');
   const src=P('head.html')+P('body.html')+"(function(){\n'use strict';\n"+js+"\n})();\n</script>\n</body>\n</html>\n";
   fs.writeFileSync(path.join(dir,'src.html'),src);
   const tmp=path.join(dir,'.tmp-build.html');

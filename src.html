@@ -73,6 +73,19 @@ input{font:inherit;user-select:text;-webkit-user-select:text;touch-action:auto}
 #picked.on{display:flex}
 #picked .pk{flex:none;display:flex;align-items:center;gap:4px;min-height:36px;border-radius:12px;padding:0 10px;font-size:16px;font-weight:900;white-space:nowrap;box-shadow:0 3px 0 rgba(0,0,0,.35)}
 #remBtn.on{background:#7fe08a}
+#remBtn{white-space:nowrap;font-size:19px;padding:0 8px}
+#play .row .btn{white-space:nowrap;padding:0 8px}
+#board .lbl{text-align:center;font-size:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:none}
+.stats{display:flex;gap:8px;flex:none}.stats>div{flex:1;min-width:0;background:rgba(255,255,255,.14);border-radius:16px;padding:6px;color:#fff;text-align:center;font-weight:800;font-size:15px;overflow:hidden}
+.stats b{display:block;font-size:26px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#boardList{flex:1;min-height:0;overflow-y:auto;touch-action:pan-y;display:flex;flex-direction:column;gap:8px;padding:2px 2px 8px}
+.lb{display:flex;align-items:center;gap:8px;min-height:56px;background:#fff;border-radius:16px;padding:6px 10px;box-shadow:0 4px 0 #4a34a8;flex:none}
+.lb.retired{opacity:.5;filter:grayscale(1)}
+.lb .rk{width:40px;flex:none;text-align:center;font-size:26px;font-weight:900}
+.lb .chip{flex:none;min-width:44px;max-width:40%;height:40px;border-radius:12px;padding:0 8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb .bar{flex:1;min-width:20px;height:14px;background:#eee;border-radius:7px;overflow:hidden}.lb .bar i{display:block;height:100%;border-radius:7px}
+.lb .w{flex:none;font-size:22px;font-weight:900;min-width:34px;text-align:right}.lb .c{flex:none;font-size:15px;font-weight:900}
+.empty{color:#fff;text-align:center;font-size:22px;font-weight:800;padding:30px 10px}
 </style>
 </head>
 <body>
@@ -81,12 +94,12 @@ input{font:inherit;user-select:text;-webkit-user-select:text;touch-action:auto}
   <div class="topbar">
     <button class="btn" id="toWheels" aria-label="My wheels">📚</button>
     <div class="grow" id="wheelTitle">My Wheel</div>
-    <button class="btn" id="muteBtn" aria-label="Sound">🔊</button>
+    <button class="btn gold" id="toBoard" aria-label="Leaderboard">🏆</button><button class="btn" id="muteBtn" aria-label="Sound">🔊</button>
   </div>
   <div id="wheelBox"><div id="wheelWrap"><svg id="pointer" viewBox="0 0 44 54"><path d="M4 6 Q22 -4 40 6 L22 52 Z" fill="#ff4d6d" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg><canvas id="wheel"></canvas><div id="hub"></div></div></div>
   <button class="btn gold" id="spinBtn">SPIN!</button>
   <div id="picked"></div>
-  <div class="row"><button class="btn pink" id="toEdit">✏️ Make</button><button class="btn" id="remBtn">👋 Remove: OFF</button><button class="btn blue" id="resetBtn" style="display:none" aria-label="Reset wheel">🔁 Reset</button></div>
+  <div class="row"><button class="btn pink" id="toEdit">✏️ Make</button><button class="btn" id="remBtn">Remove OFF</button><button class="btn blue" id="resetBtn" style="display:none" aria-label="Reset wheel">🔁 Reset</button></div>
 </section>
 <section class="screen" id="edit">
   <div class="topbar"><button class="btn green" id="editDone">✅ Done</button><div class="grow">Make it!</div></div>
@@ -100,6 +113,12 @@ input{font:inherit;user-select:text;-webkit-user-select:text;touch-action:auto}
 <section class="screen" id="wheels">
   <div class="topbar"><button class="btn" id="wheelsBack" aria-label="Back">⬅️</button><div class="grow">My Wheels</div><button class="btn green" id="newWheel">➕ New</button></div>
   <div id="wheelList"></div>
+</section>
+<section class="screen" id="board">
+  <div class="topbar"><button class="btn" id="boardBack" aria-label="Back">⬅️</button><div class="grow">🏆 Leaders</div><button class="btn red" id="boardReset" aria-label="Reset leaderboard">🧽 Reset</button></div>
+  <div class="lbl" id="boardName"></div>
+  <div class="stats"><div><b id="totSpins">0</b>spins</div><div><b id="totChamps">0</b>👑 champs</div><div id="lastWin"><b>–</b>last</div></div>
+  <div id="boardList"></div>
 </section>
 <div class="ov" id="slotOv"><div class="card">
   <h2 id="slotHead">Slot 1</h2>
@@ -176,16 +195,41 @@ const Confetti=(()=>{let raf=0;
       if(t<D)raf=requestAnimationFrame(f);else c.clearRect(0,0,W,H)})(t0)}
   return{run,stop(){cancelAnimationFrame(raf)}}})();
 
+// ---- leaderboard: stats per wheel id, keyed by slot id (renames keep counts; deleted slots shown as retired) ----
+function makeBoard(getData,save){
+  const get=w=>{const d=getData();return d.stats[w.id]||(d.stats[w.id]={spins:0,champs:0,last:null,slots:{}})};
+  return{get,
+    record(w,s,champ){const st=get(w);const e=st.slots[s.id]||(st.slots[s.id]={wins:0,champs:0});e.text=s.text;e.emoji=s.emoji;e.color=s.color;
+      if(champ){e.champs++;st.champs++}else{e.wins++;st.spins++;st.last=s.id}save()},
+    reset(w){delete getData().stats[w.id];save()},
+    rows(w){const st=get(w),ids=new Set(w.slots.map(s=>s.id)),out=[];
+      w.slots.forEach(s=>{const e=st.slots[s.id]||{wins:0,champs:0};out.push({id:s.id,text:s.text,emoji:s.emoji,color:s.color,wins:e.wins,champs:e.champs,retired:false})});
+      Object.keys(st.slots).forEach(id=>{if(!ids.has(id)){const e=st.slots[id];if(e.wins||e.champs)out.push({id,...e,retired:true})}});
+      return out.sort((a,b)=>(a.retired-b.retired)||(b.wins-a.wins)||(b.champs-a.champs))}}}
+function renderBoardInto(Board,w,$){const st=Board.get(w),rows=Board.rows(w),L=$('boardList');$('boardName').textContent=w.name;
+  $('totSpins').textContent=st.spins;$('totChamps').textContent=st.champs;
+  const lw=$('lastWin');lw.innerHTML='';const b=document.createElement('b');const ls=rows.find(r=>r.id===st.last);b.textContent=ls?(labelOf(ls)||'?'):'–';if(ls){b.style.color=ls.color}lw.append(b,'last');
+  L.innerHTML='';const max=Math.max(1,...rows.map(r=>r.wins));let rank=0,prev=-1;
+  if(!st.spins&&!st.champs){const e=document.createElement('div');e.className='empty';e.textContent='No winners yet. Go spin! 🎡';L.appendChild(e)}
+  rows.forEach((r,i)=>{if(r.wins!==prev){rank=i+1;prev=r.wins}const d=document.createElement('div');d.className='lb'+(r.retired?' retired':'');d.dataset.id=r.id;
+    const rk=document.createElement('div');rk.className='rk';rk.textContent=r.retired?'💤':r.wins?(['🥇','🥈','🥉'][rank-1]||rank):'·';
+    const ch=document.createElement('div');ch.className='chip';ch.style.background=r.color;ch.style.color=inkFor(r.color);ch.textContent=labelOf(r)||'?';
+    const bar=document.createElement('div');bar.className='bar';const fi=document.createElement('i');fi.style.width=(r.wins/max*100)+'%';fi.style.background=r.color;bar.appendChild(fi);
+    const c=document.createElement('div');c.className='c';c.textContent=r.champs?'👑'+r.champs:'';
+    const wn=document.createElement('div');wn.className='w';wn.textContent=r.wins;d.append(rk,ch,bar,c,wn);L.appendChild(d)})}
+
 // ---- app: data, screens, spin, remove-winner mode ----
 const MIN=2,MAX=50,PRESETS=[2,3,4,6,8,10,12,20,30,50];
 const $=id=>document.getElementById(id);
 const uid=()=>Date.now().toString(36)+rnd(1e9).toString(36);
-function makeSlots(n){const o=[];for(let i=0;i<n;i++)o.push({text:String(i+1),color:defaultColor(i,n),emoji:''});return o}
+function makeSlots(n){const o=[];for(let i=0;i<n;i++)o.push({id:uid(),text:String(i+1),color:defaultColor(i,n),emoji:''});return o}
 function newWheel(name,n){return{id:uid(),name:name||'My Wheel',slots:makeSlots(n||6)}}
 let data=Store.load();
 if(!data||!Array.isArray(data.wheels)||!data.wheels.length){const w=newWheel('My Wheel',6);data={wheels:[w],cur:w.id,settings:{}}}
-data.settings=data.settings||{};
+data.settings=data.settings||{};data.stats=data.stats||{};
+data.wheels.forEach(w=>w.slots.forEach(s=>{if(!s.id)s.id=uid()}));
 const save=()=>Store.save(data);
+const Board=makeBoard(()=>data,save);const renderBoard=()=>renderBoardInto(Board,cur(),$);
 const cur=()=>data.wheels.find(w=>w.id===data.cur)||data.wheels[0];
 Sound.muted=!!data.settings.mute;
 // session = which original slots are still on the wheel (remove-winner mode); never written into the saved wheel
@@ -195,14 +239,14 @@ function sess(){if(!session||session.id!==cur().id||session.active.some(i=>i>=cu
 const live=()=>{const w=cur();return sess().active.map(i=>w.slots[i])};
 let rot=0,spinning=false,anim=null,lastWin=-1,fling=null,speed=1;
 // ---- screens ----
-function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));if(id==='play')layout();if(id==='edit')renderEdit();if(id==='wheels')renderWheels()}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id));if(id==='play')layout();if(id==='edit')renderEdit();if(id==='wheels')renderWheels();if(id==='board')renderBoard()}
 // ---- play screen ----
 const cv=$('wheel');let cssSize=300;
 function layout(){const b=$('wheelBox').getBoundingClientRect();cssSize=Math.max(120,Math.floor(Math.min(b.width-28,b.height-34)));const d=Math.min(3,devicePixelRatio||1);
   cv.style.width=cv.style.height=cssSize+'px';cv.width=cv.height=Math.round(cssSize*d);$('wheelWrap').style.width=$('wheelWrap').style.height=cssSize+'px';$('wheelWrap').style.marginTop='16px';draw();renderPlay()}
 function draw(){drawWheel(cv,live(),rot,fling||{})}
 function renderPlay(){const w=cur(),s=sess();$('wheelTitle').textContent=w.name||'My Wheel';$('muteBtn').textContent=Sound.muted?'🔇':'🔊';
-  const rm=!!data.settings.remove;$('remBtn').classList.toggle('on',rm);$('remBtn').textContent=rm?'👋 Remove: ON':'👋 Remove: OFF';
+  const rm=!!data.settings.remove;$('remBtn').classList.toggle('on',rm);$('remBtn').textContent=rm?'Remove ON':'Remove OFF';$('toEdit').textContent=s.picked.length?'✏️':'✏️ Make';
   $('resetBtn').style.display=s.picked.length?'':'none';
   const pk=$('picked');pk.classList.toggle('on',s.picked.length>0);pk.innerHTML='';
   s.picked.forEach((i,k)=>{const sl=w.slots[i],e=document.createElement('div');e.className='pk';e.style.background=sl.color;e.style.color=inkFor(sl.color);e.textContent=(k+1)+'. '+(labelOf(sl)||'?');pk.appendChild(e)});
@@ -222,12 +266,12 @@ function spin(dir,power){if(spinning||fling)return;const n=live().length;if(n<2)
   anim={win,target};
   (function step(now){const t=Math.min(1,(now-t0)/D),e=1-Math.pow(1-t,3.2);rot=r0+(target-r0)*e;onRot();
     if(t<1)requestAnimationFrame(step);else{rot=mod(target,TAU);spinning=false;draw();lastWin=indexAt(rot,n);anim=null;announce(lastWin)}})(t0)}
-function announce(i){const s=live()[i];showWin(s,false)}
+function announce(i){const s=live()[i];Board.record(cur(),s,false);showWin(s,false)}
 function showWin(s,champ){$('winHead').textContent=champ?'🏆 Champion!':'🎉 It\'s…';const b=$('winBadge');b.style.background=s.color;b.style.color=inkFor(s.color);
   b.innerHTML='';if(s.emoji){const e=document.createElement('span');e.className='e';e.textContent=s.emoji;b.appendChild(e)}b.appendChild(document.createTextNode(s.text||(s.emoji?'':'?')));
   b.style.fontSize=champ?'54px':'44px';$('againBtn').textContent=champ?'🔁 Reset wheel':'🔄 Spin again';$('winOv').dataset.champ=champ?'1':'';
   $('winOv').classList.add('on');champ?Sound.champ():Sound.win();Confetti.run($('confetti'),[s.color,'#ffc83d','#ffffff','#ff4dae','#29a8ff','#8ee03b'],champ)}
-function celebrate(){const s=live()[0];if(s)showWin(s,true)}
+function celebrate(counted){const s=live()[0];if(!s)return;if(!counted)Board.record(cur(),s,true);showWin(s,true)}
 function closeWin(again){const champ=$('winOv').dataset.champ==='1';$('winOv').classList.remove('on');Confetti.stop();
   if(champ){if(again){resetSession();rot=0;layout()}return}
   if(data.settings.remove&&lastWin>=0&&live().length>1){removeWinner(lastWin,()=>{if(live().length<2)celebrate();else if(again)spin(1,1)})}
@@ -255,7 +299,7 @@ function renderEdit(){const w=cur();$('editName').value=w.name;$('count').textCo
 function changed(){resetSession();save();renderEdit()}
 function setCount(n){const w=cur();n=Math.max(MIN,Math.min(MAX,n));const old=w.slots.length;if(n===old)return;
   const allDefault=w.slots.every((s,i)=>s.color===defaultColor(i,old));
-  if(n<old)w.slots.length=n;else for(let i=old;i<n;i++)w.slots.push({text:String(i+1),color:defaultColor(i%12,12),emoji:''});
+  if(n<old)w.slots.length=n;else for(let i=old;i<n;i++)w.slots.push({id:uid(),text:String(i+1),color:defaultColor(i%12,12),emoji:''});
   if(allDefault)w.slots.forEach((s,i)=>s.color=defaultColor(i,n));
   if(w.slots.length>1&&w.slots[n-1].color===w.slots[0].color&&!allDefault)w.slots[n-1].color=BASE[(BASE.indexOf(w.slots[0].color)+3)%12];
   changed()}
@@ -279,10 +323,12 @@ $('askNo').onclick=()=>{$('askOv').classList.remove('on');askCb=null};$('askYes'
 function renderWheels(){const L=$('wheelList');L.innerHTML='';data.wheels.forEach(w=>{const r=document.createElement('div');r.className='wrow'+(w.id===data.cur?' cur':'');r.dataset.id=w.id;
   const m=document.createElement('canvas');m.className='mini';m.width=m.height=104;drawWheel(m,w.slots,0,{noText:true});
   const nm=document.createElement('button');nm.className='nm load';nm.textContent=(w.name||'Wheel')+' ('+w.slots.length+')';nm.onclick=()=>{data.cur=w.id;save();rot=0;show('play')};
-  const d=document.createElement('button');d.className='btn blue dup';d.textContent='📄';d.setAttribute('aria-label','Copy');d.onclick=()=>{const c=JSON.parse(JSON.stringify(w));c.id=uid();c.name=(w.name+' 2').slice(0,24);data.wheels.splice(data.wheels.indexOf(w)+1,0,c);save();renderWheels()};
-  const x=document.createElement('button');x.className='btn red del';x.textContent='🗑️';x.setAttribute('aria-label','Delete');x.onclick=()=>ask('Delete "'+w.name+'"?',()=>{data.wheels=data.wheels.filter(o=>o!==w);if(!data.wheels.length)data.wheels.push(newWheel('My Wheel',6));if(!data.wheels.some(o=>o.id===data.cur))data.cur=data.wheels[0].id;save();renderWheels()});
+  const d=document.createElement('button');d.className='btn blue dup';d.textContent='📄';d.setAttribute('aria-label','Copy');d.onclick=()=>{const c=JSON.parse(JSON.stringify(w));c.id=uid();c.slots.forEach(x=>x.id=uid());c.name=(w.name+' 2').slice(0,24);data.wheels.splice(data.wheels.indexOf(w)+1,0,c);save();renderWheels()};
+  const x=document.createElement('button');x.className='btn red del';x.textContent='🗑️';x.setAttribute('aria-label','Delete');x.onclick=()=>ask('Delete "'+w.name+'"?',()=>{data.wheels=data.wheels.filter(o=>o!==w);delete data.stats[w.id];if(!data.wheels.length)data.wheels.push(newWheel('My Wheel',6));if(!data.wheels.some(o=>o.id===data.cur))data.cur=data.wheels[0].id;save();renderWheels()});
   r.append(m,nm,d,x);L.appendChild(r)})}
 $('newWheel').onclick=()=>{const w=newWheel('Wheel '+(data.wheels.length+1),6);data.wheels.push(w);data.cur=w.id;save();rot=0;show('edit')};
+$('toBoard').onclick=()=>{if(!spinning&&!fling)show('board')};$('boardBack').onclick=()=>show('play');
+$('boardReset').onclick=()=>ask('Clear all wins?',()=>{Board.reset(cur());renderBoard()});
 $('wheelsBack').onclick=()=>show('play');
 // ---- play buttons ----
 $('spinBtn').onclick=()=>spin(1,1);$('toEdit').onclick=()=>{if(!spinning&&!fling)show('edit')};$('toWheels').onclick=()=>{if(!spinning&&!fling)show('wheels')};
@@ -295,7 +341,7 @@ document.addEventListener('gesturestart',e=>e.preventDefault());
 document.addEventListener('touchmove',e=>{if(!e.target.closest('#slotList,#wheelList,.emo,#picked'))e.preventDefault()},{passive:false});
 save();show('play');
 // ---- test/build hooks ----
-window.__SW={state:()=>{const s=sess();return{screen:document.querySelector('.screen.on').id,rot,spinning,flinging:!!fling,n:live().length,lastWin,under:indexAt(rot,live().length),live:live().map(x=>({...x})),picked:s.picked.slice(),active:s.active.slice(),wheel:JSON.parse(JSON.stringify(cur())),wheels:data.wheels.length,settings:{...data.settings},win:$('winOv').classList.contains('on'),champ:$('winOv').dataset.champ==='1',winText:$('winBadge').textContent}},
+window.__SW={stats:()=>JSON.parse(JSON.stringify(Board.get(cur()))),state:()=>{const s=sess();return{screen:document.querySelector('.screen.on').id,rot,spinning,flinging:!!fling,n:live().length,lastWin,under:indexAt(rot,live().length),live:live().map(x=>({...x})),picked:s.picked.slice(),active:s.active.slice(),wheel:JSON.parse(JSON.stringify(cur())),wheels:data.wheels.length,settings:{...data.settings},win:$('winOv').classList.contains('on'),champ:$('winOv').dataset.champ==='1',winText:$('winBadge').textContent}},
   setSpeed:v=>{speed=v},fontFor:(i)=>{const n=live().length;return fitFont(cv.getContext('2d'),labelOf(live()[i]),cv.width/2,TAU/n)/(Math.min(3,devicePixelRatio||1))},
   icon:()=>{const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');x.fillStyle='#2a1a7a';x.fillRect(0,0,180,180);const w=document.createElement('canvas');w.width=w.height=150;drawWheel(w,makeSlots(8).map(s=>({...s,text:''})),0.2,{});
     x.drawImage(w,15,18);x.fillStyle='#ffc83d';x.beginPath();x.arc(90,93,16,0,TAU);x.fill();x.fillStyle='#ff4d6d';x.strokeStyle='#fff';x.lineWidth=4;x.beginPath();x.moveTo(74,6);x.lineTo(106,6);x.lineTo(90,40);x.closePath();x.fill();x.stroke();return c.toDataURL('image/png')}};

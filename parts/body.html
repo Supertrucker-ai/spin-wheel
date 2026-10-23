@@ -4,12 +4,12 @@
   <div class="topbar">
     <button class="btn" id="toWheels" aria-label="My wheels">📚</button>
     <div class="grow" id="wheelTitle">My Wheel</div>
-    <button class="btn" id="muteBtn" aria-label="Sound">🔊</button>
+    <button class="btn gold" id="toBoard" aria-label="Leaderboard">🏆</button><button class="btn" id="muteBtn" aria-label="Sound">🔊</button>
   </div>
   <div id="wheelBox"><div id="wheelWrap"><svg id="pointer" viewBox="0 0 44 54"><path d="M4 6 Q22 -4 40 6 L22 52 Z" fill="#ff4d6d" stroke="#fff" stroke-width="4" stroke-linejoin="round"/></svg><canvas id="wheel"></canvas><div id="hub"></div></div></div>
   <button class="btn gold" id="spinBtn">SPIN!</button>
   <div id="picked"></div>
-  <div class="row"><button class="btn pink" id="toEdit">✏️ Make</button><button class="btn" id="remBtn">👋 Remove: OFF</button><button class="btn blue" id="resetBtn" style="display:none" aria-label="Reset wheel">🔁 Reset</button></div>
+  <div class="row"><button class="btn pink" id="toEdit">✏️ Make</button><button class="btn" id="remBtn">Remove OFF</button><button class="btn blue" id="resetBtn" style="display:none" aria-label="Reset wheel">🔁 Reset</button></div>
 </section>
 <section class="screen" id="edit">
   <div class="topbar"><button class="btn green" id="editDone">✅ Done</button><div class="grow">Make it!</div></div>
@@ -23,6 +23,12 @@
 <section class="screen" id="wheels">
   <div class="topbar"><button class="btn" id="wheelsBack" aria-label="Back">⬅️</button><div class="grow">My Wheels</div><button class="btn green" id="newWheel">➕ New</button></div>
   <div id="wheelList"></div>
+</section>
+<section class="screen" id="board">
+  <div class="topbar"><button class="btn" id="boardBack" aria-label="Back">⬅️</button><div class="grow">🏆 Leaders</div><button class="btn red" id="boardReset" aria-label="Reset leaderboard">🧽 Reset</button></div>
+  <div class="lbl" id="boardName"></div>
+  <div class="stats"><div><b id="totSpins">0</b>spins</div><div><b id="totChamps">0</b>👑 champs</div><div id="lastWin"><b>–</b>last</div></div>
+  <div id="boardList"></div>
 </section>
 <div class="ov" id="slotOv"><div class="card">
   <h2 id="slotHead">Slot 1</h2>
