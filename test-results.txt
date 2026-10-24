@@ -3,12 +3,12 @@ PASS iphone play: no page scroll — {"sh":844,"ih":844,"sw":390,"iw":390}
 PASS iphone play: inside safe viewport
 PASS iphone play: tap targets >=44px
 PASS iphone SPIN button: spinning started
-PASS iphone SPIN button: announced slot under pointer — under 3 win 3 '4' px #29a8ff slot #29a8ff
+PASS iphone SPIN button: announced slot under pointer — under 5 win 5 '6' px #ff4dae slot #ff4dae
 PASS iphone win popup: no page scroll — {"sh":844,"ih":844,"sw":390,"iw":390}
 PASS iphone win popup: inside safe viewport
 PASS iphone win popup: tap targets >=44px
 PASS iphone flick: spinning started
-PASS iphone flick: announced slot under pointer — under 5 win 5 '6' px #ff4dae slot #ff4dae
+PASS iphone flick: announced slot under pointer — under 3 win 3 '4' px #29a8ff slot #29a8ff
 PASS iphone edit: no page scroll — {"sh":844,"ih":844,"sw":390,"iw":390}
 PASS iphone edit: inside safe viewport
 PASS iphone edit: tap targets >=44px
@@ -20,10 +20,10 @@ PASS iphone slot editor: no page scroll — {"sh":844,"ih":844,"sw":390,"iw":390
 PASS iphone slot editor: inside safe viewport
 PASS iphone slot editor: tap targets >=44px
 PASS iphone: random colors changes palette
-PASS iphone: edits persist after reload — {"id":"mvlp59vjchq5cl","text":"Pizza","color":"#29a8ff","emoji":"🍕"}
+PASS iphone: edits persist after reload — {"id":"mvmiarvvc8tgdz","text":"Pizza","color":"#2ecc71","emoji":"🍕"}
 PASS iphone: renders 2..50 slots with font >=7px
 PASS iphone spin with 50 slots: spinning started
-PASS iphone spin with 50 slots: announced slot under pointer — under 5 win 5 '6' px #1fd1c1 slot #1fd1c1
+PASS iphone spin with 50 slots: announced slot under pointer — under 26 win 26 '27' px #ffd21f slot #ffd21f
 PASS iphone: new wheel saved
 PASS iphone: duplicate
 PASS iphone wheels: no page scroll — {"sh":844,"ih":844,"sw":390,"iw":390}
@@ -34,32 +34,32 @@ PASS iphone: delete confirm removes
 PASS iphone: load wheel
 PASS iphone: remove toggle on
 PASS iphone remove spin 1: spinning started
-PASS iphone remove spin 1: announced slot under pointer — under 3 win 3 '4' px #8ee03b slot #8ee03b
-PASS iphone: winner 1 removed & listed — [3]
+PASS iphone remove spin 1: announced slot under pointer — under 4 win 4 '5' px #3f6bff slot #3f6bff
+PASS iphone: winner 1 removed & listed — [4]
 PASS iphone remove spin 2: spinning started
 PASS iphone remove spin 2: announced slot under pointer — under 2 win 2 '3' px #ffd21f slot #ffd21f
-PASS iphone: winner 2 removed & listed — [3,2]
+PASS iphone: winner 2 removed & listed — [4,2]
 PASS iphone remove list: no page scroll — {"sh":844,"ih":844,"sw":390,"iw":390}
 PASS iphone remove list: inside safe viewport
 PASS iphone remove list: tap targets >=44px
 PASS iphone remove spin 3: spinning started
-PASS iphone remove spin 3: announced slot under pointer — under 2 win 2 '5' px #2ecc71 slot #2ecc71
-PASS iphone: winner 3 removed & listed — [3,2,4]
+PASS iphone remove spin 3: announced slot under pointer — under 2 win 2 '4' px #8ee03b slot #8ee03b
+PASS iphone: winner 3 removed & listed — [4,2,3]
 PASS iphone remove spin 4: spinning started
-PASS iphone remove spin 4: announced slot under pointer — under 1 win 1 'Tacos' px #ff4d4d slot #ff4d4d
-PASS iphone: winner 4 removed & listed — [3,2,4,1]
+PASS iphone remove spin 4: announced slot under pointer — under 0 win 0 '🍕Pizza' px #2ecc71 slot #2ecc71
+PASS iphone: winner 4 removed & listed — [4,2,3,0]
 PASS iphone remove spin 5: spinning started
 PASS iphone remove spin 5: announced slot under pointer — under 1 win 1 '6' px #1fd1c1 slot #1fd1c1
-PASS iphone: winner 5 removed & listed — [3,2,4,1,5]
-PASS iphone: last one standing → champion — 🍕Pizza
-PASS iphone: picked list in order — 1. 4 | 2. 3 | 3. 5 | 4. Tacos | 5. 6
+PASS iphone: winner 5 removed & listed — [4,2,3,0,5]
+PASS iphone: last one standing → champion — Tacos
+PASS iphone: picked list in order — 1. 5 | 2. 3 | 3. 4 | 4. 🍕 Pizza | 5. 6
 PASS iphone: saved wheel untouched during removal
 PASS iphone: reset restores all slots
 PASS iphone: remove toggle persists after reload
 PASS iphone: saved wheel intact after reload
 PASS iphone: remove toggle off
 PASS iphone normal mode no removal: spinning started
-PASS iphone normal mode no removal: announced slot under pointer — under 3 win 3 '4' px #8ee03b slot #8ee03b
+PASS iphone normal mode no removal: announced slot under pointer — under 2 win 2 '3' px #ffd21f slot #ffd21f
 PASS iphone: spin again keeps slots (mode off)
 PASS iphone: mute toggle
 PASS iphone: no console errors / network
@@ -68,12 +68,12 @@ PASS desktop play: no page scroll — {"sh":800,"ih":800,"sw":1280,"iw":1280}
 PASS desktop play: inside safe viewport
 PASS desktop play: tap targets >=44px
 PASS desktop SPIN button: spinning started
-PASS desktop SPIN button: announced slot under pointer — under 5 win 5 '6' px #ff4dae slot #ff4dae
+PASS desktop SPIN button: announced slot under pointer — under 2 win 2 '3' px #2ecc71 slot #2ecc71
 PASS desktop win popup: no page scroll — {"sh":800,"ih":800,"sw":1280,"iw":1280}
 PASS desktop win popup: inside safe viewport
 PASS desktop win popup: tap targets >=44px
 PASS desktop drag-flick (mouse): spinning started
-PASS desktop drag-flick (mouse): announced slot under pointer — under 0 win 0 '1' px #ff4d4d slot #ff4d4d
+PASS desktop drag-flick (mouse): announced slot under pointer — under 5 win 5 '6' px #ff4dae slot #ff4dae
 PASS desktop edit: no page scroll — {"sh":800,"ih":800,"sw":1280,"iw":1280}
 PASS desktop edit: inside safe viewport
 PASS desktop edit: tap targets >=44px
@@ -85,7 +85,7 @@ PASS desktop slot editor: no page scroll — {"sh":800,"ih":800,"sw":1280,"iw":1
 PASS desktop slot editor: inside safe viewport
 PASS desktop slot editor: tap targets >=44px
 PASS desktop: random colors changes palette
-PASS desktop: edits persist after reload — {"id":"mvlp61e07xwizp","text":"Pizza","color":"#1fd1c1","emoji":"🍕"}
+PASS desktop: edits persist after reload — {"id":"mvmibkxd47fuad","text":"Pizza","color":"#ff4d4d","emoji":"🍕"}
 PASS desktop: new wheel saved
 PASS desktop: duplicate
 PASS desktop wheels: no page scroll — {"sh":800,"ih":800,"sw":1280,"iw":1280}
@@ -96,62 +96,62 @@ PASS desktop: delete confirm removes
 PASS desktop: load wheel
 PASS desktop: remove toggle on
 PASS desktop remove spin 1: spinning started
-PASS desktop remove spin 1: announced slot under pointer — under 4 win 4 '5' px #29a8ff slot #29a8ff
-PASS desktop: winner 1 removed & listed — [4]
+PASS desktop remove spin 1: announced slot under pointer — under 1 win 1 'Tacos' px #fff36b slot #fff36b
+PASS desktop: winner 1 removed & listed — [1]
 PASS desktop remove spin 2: spinning started
-PASS desktop remove spin 2: announced slot under pointer — under 4 win 4 '6' px #8a4dff slot #8a4dff
-PASS desktop: winner 2 removed & listed — [4,5]
+PASS desktop remove spin 2: announced slot under pointer — under 0 win 0 '🍕Pizza' px #ff4d4d slot #ff4d4d
+PASS desktop: winner 2 removed & listed — [1,0]
 PASS desktop remove list: no page scroll — {"sh":800,"ih":800,"sw":1280,"iw":1280}
 PASS desktop remove list: inside safe viewport
 PASS desktop remove list: tap targets >=44px
 PASS desktop remove spin 3: spinning started
-PASS desktop remove spin 3: announced slot under pointer — under 3 win 3 '4' px #c8f7c5 slot #c8f7c5
-PASS desktop: winner 3 removed & listed — [4,5,3]
+PASS desktop remove spin 3: announced slot under pointer — under 1 win 1 '4' px #8ee03b slot #8ee03b
+PASS desktop: winner 3 removed & listed — [1,0,3]
 PASS desktop remove spin 4: spinning started
-PASS desktop remove spin 4: announced slot under pointer — under 0 win 0 '🍕Pizza' px #1fd1c1 slot #1fd1c1
-PASS desktop: winner 4 removed & listed — [4,5,3,0]
+PASS desktop remove spin 4: announced slot under pointer — under 2 win 2 '6' px #8a4dff slot #8a4dff
+PASS desktop: winner 4 removed & listed — [1,0,3,5]
 PASS desktop remove spin 5: spinning started
-PASS desktop remove spin 5: announced slot under pointer — under 0 win 0 'Tacos' px #8b5a2b slot #8b5a2b
-PASS desktop: winner 5 removed & listed — [4,5,3,0,1]
+PASS desktop remove spin 5: announced slot under pointer — under 1 win 1 '5' px #e0c3ff slot #e0c3ff
+PASS desktop: winner 5 removed & listed — [1,0,3,5,4]
 PASS desktop: last one standing → champion — 3
-PASS desktop: picked list in order — 1. 5 | 2. 6 | 3. 4 | 4. 🍕 Pizza | 5. Tacos
+PASS desktop: picked list in order — 1. Tacos | 2. 🍕 Pizza | 3. 4 | 4. 6 | 5. 5
 PASS desktop: saved wheel untouched during removal
 PASS desktop: reset restores all slots
 PASS desktop: remove toggle persists after reload
 PASS desktop: saved wheel intact after reload
 PASS desktop: remove toggle off
 PASS desktop normal mode no removal: spinning started
-PASS desktop normal mode no removal: announced slot under pointer — under 3 win 3 '4' px #c8f7c5 slot #c8f7c5
+PASS desktop normal mode no removal: announced slot under pointer — under 1 win 1 'Tacos' px #fff36b slot #fff36b
 PASS desktop: spin again keeps slots (mode off)
 PASS desktop: mute toggle
 PASS desktop: no console errors / network
 PASS iphone off: Remove label on one line — {"h":52,"o":true}
-PASS iphone: 40 spins counted per slot — {"mvlp6hrjduo59m":9,"mvlp6hrj2fk1iu":7,"mvlp6hrj2khq74":6,"mvlp6hrj83szvk":8,"mvlp6hrjepfymz":4,"mvlp6hrj1lkgaa":6}
+PASS iphone: 40 spins counted per slot — {"mvmic1cx3k8bqj":5,"mvmic1cxccyfli":8,"mvmic1cxacxz74":7,"mvmic1cx8l868z":8,"mvmic1cxez51yj":4,"mvmic1cx9ykewo":8}
 PASS iphone: leaderboard persists after reload
 PASS iphone leaderboard: no page scroll — {"sh":844,"ih":844,"sw":390,"iw":390}
 PASS iphone leaderboard: inside safe viewport
 PASS iphone leaderboard: tap targets >=44px
-PASS iphone: board sorted by wins — 9,8,7,6,6,4
+PASS iphone: board sorted by wins — 8,8,8,7,5,4
 PASS iphone: 1st gets 🥇
 PASS iphone: total spins shown
-PASS iphone: renamed slot keeps count — 🥈 Robot 8
+PASS iphone: renamed slot keeps count — 5 Robot 5
 PASS iphone: deleted slot shown as retired
 PASS iphone: new wheel has own empty board
 PASS iphone spin on wheel 2: spinning started
-PASS iphone spin on wheel 2: announced slot under pointer — under 0 win 0 '1' px #ff4d4d slot #ff4d4d
+PASS iphone spin on wheel 2: announced slot under pointer — under 2 win 2 '3' px #2ecc71 slot #2ecc71
 PASS iphone: wheel 2 counts separately
 PASS iphone: wheel 1 board unchanged
 PASS iphone on: Remove label on one line — {"h":52,"o":true}
 PASS iphone rm 0: spinning started
-PASS iphone rm 0: announced slot under pointer — under 1 win 1 '2' px #ffd21f slot #ffd21f
+PASS iphone rm 0: announced slot under pointer — under 2 win 2 '3' px #2ecc71 slot #2ecc71
 PASS iphone on + reset shown: Remove label on one line — {"h":52,"o":true}
 PASS iphone rm 1: spinning started
-PASS iphone rm 1: announced slot under pointer — under 1 win 1 '3' px #2ecc71 slot #2ecc71
+PASS iphone rm 1: announced slot under pointer — under 2 win 2 '4' px #3f6bff slot #3f6bff
 PASS iphone rm 2: spinning started
-PASS iphone rm 2: announced slot under pointer — under 0 win 0 'Robot' px #ff4d4d slot #ff4d4d
+PASS iphone rm 2: announced slot under pointer — under 1 win 1 '2' px #ffd21f slot #ffd21f
 PASS iphone rm 3: spinning started
-PASS iphone rm 3: announced slot under pointer — under 0 win 0 '4' px #3f6bff slot #3f6bff
-PASS iphone: remove picks counted + champion crowned — {"spins":44,"champs":1}
+PASS iphone rm 3: announced slot under pointer — under 0 win 0 'Robot' px #ff4d4d slot #ff4d4d
+PASS iphone: remove picks counted as spins, only champion gets +1 win & crown — {"spins":44,"champs":1}
 PASS iphone: re-showing champion doesn't double count
 PASS iphone: crown shown
 PASS iphone: reset cancel keeps
@@ -163,32 +163,32 @@ PASS iphone leaderboard wheel2: inside safe viewport
 PASS iphone leaderboard wheel2: tap targets >=44px
 PASS iphone: leaderboard no console errors / network
 PASS desktop off: Remove label on one line — {"h":52,"o":true}
-PASS desktop: 40 spins counted per slot — {"mvlp6xp0cgrt34":7,"mvlp6xp0bvi2bl":8,"mvlp6xp0909912":8,"mvlp6xp04bkup2":7,"mvlp6xp08e1iec":3,"mvlp6xp07kipaq":7}
+PASS desktop: 40 spins counted per slot — {"mvmici8gdrwu3h":8,"mvmici8g457qi3":10,"mvmici8g4pmlvu":5,"mvmici8g9tikjk":3,"mvmici8g2mdqyr":10,"mvmici8gi03c2":4}
 PASS desktop: leaderboard persists after reload
 PASS desktop leaderboard: no page scroll — {"sh":800,"ih":800,"sw":1280,"iw":1280}
 PASS desktop leaderboard: inside safe viewport
 PASS desktop leaderboard: tap targets >=44px
-PASS desktop: board sorted by wins — 8,8,7,7,7,3
+PASS desktop: board sorted by wins — 10,10,8,5,4,3
 PASS desktop: 1st gets 🥇
 PASS desktop: total spins shown
-PASS desktop: renamed slot keeps count — 🥈 Robot 7
+PASS desktop: renamed slot keeps count — 5 Robot 3
 PASS desktop: deleted slot shown as retired
 PASS desktop: new wheel has own empty board
 PASS desktop spin on wheel 2: spinning started
-PASS desktop spin on wheel 2: announced slot under pointer — under 1 win 1 '2' px #ffd21f slot #ffd21f
+PASS desktop spin on wheel 2: announced slot under pointer — under 0 win 0 '1' px #ff4d4d slot #ff4d4d
 PASS desktop: wheel 2 counts separately
 PASS desktop: wheel 1 board unchanged
 PASS desktop on: Remove label on one line — {"h":52,"o":true}
 PASS desktop rm 0: spinning started
-PASS desktop rm 0: announced slot under pointer — under 0 win 0 'Robot' px #ff4d4d slot #ff4d4d
+PASS desktop rm 0: announced slot under pointer — under 3 win 3 '4' px #3f6bff slot #3f6bff
 PASS desktop on + reset shown: Remove label on one line — {"h":52,"o":true}
 PASS desktop rm 1: spinning started
-PASS desktop rm 1: announced slot under pointer — under 1 win 1 '3' px #2ecc71 slot #2ecc71
+PASS desktop rm 1: announced slot under pointer — under 1 win 1 '2' px #ffd21f slot #ffd21f
 PASS desktop rm 2: spinning started
-PASS desktop rm 2: announced slot under pointer — under 1 win 1 '4' px #3f6bff slot #3f6bff
+PASS desktop rm 2: announced slot under pointer — under 2 win 2 '5' px #d24dff slot #d24dff
 PASS desktop rm 3: spinning started
-PASS desktop rm 3: announced slot under pointer — under 0 win 0 '2' px #ffd21f slot #ffd21f
-PASS desktop: remove picks counted + champion crowned — {"spins":44,"champs":1}
+PASS desktop rm 3: announced slot under pointer — under 1 win 1 '3' px #2ecc71 slot #2ecc71
+PASS desktop: remove picks counted as spins, only champion gets +1 win & crown — {"spins":44,"champs":1}
 PASS desktop: re-showing champion doesn't double count
 PASS desktop: crown shown
 PASS desktop: reset cancel keeps
@@ -199,15 +199,79 @@ PASS desktop leaderboard wheel2: no page scroll — {"sh":800,"ih":800,"sw":1280
 PASS desktop leaderboard wheel2: inside safe viewport
 PASS desktop leaderboard wheel2: tap targets >=44px
 PASS desktop: leaderboard no console errors / network
+PASS iphone: 10-slot remove run → champion screen, 9 slots removed
+PASS iphone: 10-slot stats: spins 9, champs 1, sum of wins 1, champion 1 win/1 crown, last=champion — {"spins":9,"champs":1,"sum":1}
+PASS iphone: 10-slot board: champion row 🥇 👑1 and 1 win, first
+PASS iphone: 10-slot board: 9 others 0 wins, no crown; wins column sums to 1
+PASS iphone: 10-slot board totals: 9 spins, 1 champ, last=champion
+PASS iphone: board identical after reload
+PASS iphone: 3 remove landings = +3 spins, +0 wins — {"spins":12,"sum":1}
+PASS iphone: reset mid-run restores slots, leaves wins untouched
+PASS iphone: second full run after mid-run reset: sum wins 2, champs 2, spins 21 — {"spins":21,"champs":2,"sum":2}
+PASS iphone: board medals sensible after 2 runs (no 0-win crown, ties share rank, wins sum 2) — [{"id":"mvmicu18a0jw5i","rk":"🥇","c":"👑1","w":1,"retired":false,"t":"9"},{"id":"mvmicu18flrblw","rk":"🥇","c":"👑1","w":1,"retired":false,"t":"10"},{"id":"mvmictze8nf48j","rk":"·","c":"","w":0,"retired":false,"t":"1"}]
+PASS iphone: 2-slot stats: spins 1, champs 1, sum wins 1, champion 1 win/1 crown — {"spins":1,"champs":1,"last":"mvmidqfu14nb5p","slots":{"mvmidqfu55klsi":{"wins":0,"champs":0,"text":"1","emoji":"","color":"#ff4d4d"},"mvmidqfu14nb5p":{"wins":1,"champs":1,"text":"2","emoji":"","color":"#29a8ff"}}}
+PASS iphone: 2-slot board: champion 🥇 👑1 with 1 win; other 0 and a dot
+PASS iphone: 2-slot board totals 1 spin, 1 champ
+PASS iphone: renamed champion keeps 1 win + crown
+PASS iphone normal 0: spinning started
+PASS iphone normal 0: announced slot under pointer — under 1 win 1 'Boss' px #29a8ff slot #29a8ff
+PASS iphone normal 1: spinning started
+PASS iphone normal 1: announced slot under pointer — under 0 win 0 '1' px #ff4d4d slot #ff4d4d
+PASS iphone normal 2: spinning started
+PASS iphone normal 2: announced slot under pointer — under 0 win 0 '1' px #ff4d4d slot #ff4d4d
+PASS iphone normal 3: spinning started
+PASS iphone normal 3: announced slot under pointer — under 0 win 0 '1' px #ff4d4d slot #ff4d4d
+PASS iphone normal 4: spinning started
+PASS iphone normal 4: announced slot under pointer — under 1 win 1 'Boss' px #29a8ff slot #29a8ff
+PASS iphone: normal mode after remove runs: +5 spins, +5 wins, crowns unchanged
+PASS iphone: remove-wins leaderboard no console errors / network
+PASS desktop: 10-slot remove run → champion screen, 9 slots removed
+PASS desktop: 10-slot stats: spins 9, champs 1, sum of wins 1, champion 1 win/1 crown, last=champion — {"spins":9,"champs":1,"sum":1}
+PASS desktop: 10-slot board: champion row 🥇 👑1 and 1 win, first
+PASS desktop: 10-slot board: 9 others 0 wins, no crown; wins column sums to 1
+PASS desktop: 10-slot board totals: 9 spins, 1 champ, last=champion
+PASS desktop: board identical after reload
+PASS desktop: 3 remove landings = +3 spins, +0 wins — {"spins":12,"sum":1}
+PASS desktop: reset mid-run restores slots, leaves wins untouched
+PASS desktop: second full run after mid-run reset: sum wins 2, champs 2, spins 21 — {"spins":21,"champs":2,"sum":2}
+PASS desktop: board medals sensible after 2 runs (no 0-win crown, ties share rank, wins sum 2) — [{"id":"mvmidz1mb273ek","rk":"🥇","c":"👑1","w":1,"retired":false,"t":"4"},{"id":"mvmidz1m7e7ov7","rk":"🥇","c":"👑1","w":1,"retired":false,"t":"6"},{"id":"mvmidz1m90xhxo","rk":"·","c":"","w":0,"retired":false,"t":"1"}]
+PASS desktop: 2-slot stats: spins 1, champs 1, sum wins 1, champion 1 win/1 crown — {"spins":1,"champs":1,"last":"mvmier5q7vl6y5","slots":{"mvmier5q3etijw":{"wins":0,"champs":0,"text":"2","emoji":"","color":"#29a8ff"},"mvmier5q7vl6y5":{"wins":1,"champs":1,"text":"1","emoji":"","color":"#ff4d4d"}}}
+PASS desktop: 2-slot board: champion 🥇 👑1 with 1 win; other 0 and a dot
+PASS desktop: 2-slot board totals 1 spin, 1 champ
+PASS desktop: renamed champion keeps 1 win + crown
+PASS desktop normal 0: spinning started
+PASS desktop normal 0: announced slot under pointer — under 0 win 0 'Boss' px #ff4d4d slot #ff4d4d
+PASS desktop normal 1: spinning started
+PASS desktop normal 1: announced slot under pointer — under 1 win 1 '2' px #29a8ff slot #29a8ff
+PASS desktop normal 2: spinning started
+PASS desktop normal 2: announced slot under pointer — under 0 win 0 'Boss' px #ff4d4d slot #ff4d4d
+PASS desktop normal 3: spinning started
+PASS desktop normal 3: announced slot under pointer — under 1 win 1 '2' px #29a8ff slot #29a8ff
+PASS desktop normal 4: spinning started
+PASS desktop normal 4: announced slot under pointer — under 1 win 1 '2' px #29a8ff slot #29a8ff
+PASS desktop: normal mode after remove runs: +5 spins, +5 wins, crowns unchanged
+PASS desktop: remove-wins leaderboard no console errors / network
+PASS iphone: migration: old saved stats unchanged after 3 reloads (no double credit)
+PASS iphone: migration: stored data intact
+PASS iphone: migration: old crowned champion with 0 wins shows medal + crown, not a dot — [{"id":"a","rk":"🥇","c":"","w":1,"retired":false,"t":"S1"},{"id":"c","rk":"🥇","c":"","w":1,"retired":false,"t":"S3"},{"id":"b","rk":"🥉","c":"👑1","w":0,"retired":false,"t":"S2"}]
+PASS iphone: migration: old board ranking
+PASS iphone: migration: new Remove run on old data → +2 spins, +1 win (champion), +1 crown — {"spins":4,"champs":2,"last":"b","slots":{"a":{"wins":1,"champs":0,"text":"S1","emoji":"","color":"#ff4d6d"},"b":{"wins":1,"champs":2,"text":"S2","emoji":"","color":"#29a8ff"},"c":{"wins":1,"champs":0,"text":"S3","emoji":"","color":"#8ee03b"}}}
+PASS iphone: migration: no console errors / network
+PASS desktop: migration: old saved stats unchanged after 3 reloads (no double credit)
+PASS desktop: migration: stored data intact
+PASS desktop: migration: old crowned champion with 0 wins shows medal + crown, not a dot — [{"id":"a","rk":"🥇","c":"","w":1,"retired":false,"t":"S1"},{"id":"c","rk":"🥇","c":"","w":1,"retired":false,"t":"S3"},{"id":"b","rk":"🥉","c":"👑1","w":0,"retired":false,"t":"S2"}]
+PASS desktop: migration: old board ranking
+PASS desktop: migration: new Remove run on old data → +2 spins, +1 win (champion), +1 crown — {"spins":4,"champs":2,"last":"b","slots":{"a":{"wins":1,"champs":0,"text":"S1","emoji":"","color":"#ff4d6d"},"b":{"wins":1,"champs":2,"text":"S2","emoji":"","color":"#29a8ff"},"c":{"wins":1,"champs":0,"text":"S3","emoji":"","color":"#8ee03b"}}}
+PASS desktop: migration: no console errors / network
 PASS iphone: 50-slot board renders rows — 50
 PASS iphone: 150 wins recorded for scroll test — 150
 PASS iphone: touchmove on leaderboard not prevented
-PASS iphone: leaderboard scrollTop changes after touch swipe — 704
+PASS iphone: leaderboard scrollTop changes after touch swipe — 698
 PASS iphone: bottom leaderboard row reachable by touch — {"end":true,"vis":true}
 PASS iphone: touchmove on wheel still blocked (flicks)
 PASS iphone: 50-slot editor list touch-scrolls
 PASS iphone: saved wheels list touch-scrolls
 PASS iphone: scroll test no console errors
-PASS fairness: 600 real spins spread across 6 slots, all geometry-matched — [106,101,90,109,107,87]
+PASS fairness: 600 real spins spread across 6 slots, all geometry-matched — [102,88,93,94,91,132]
 
-211/211 passed
+275/275 passed

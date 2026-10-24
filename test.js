@@ -123,7 +123,7 @@ async function spinAndCheck(P,label,how){const before=await st(P);
   await tap(P,'#remBtn');await nowrap('on');
   for(let k=0;k<4;k++){await spinAndCheck(P,'rm '+k,'btn');await tap(P,'#winClose');await P.page.waitForFunction(()=>!window.__SW.state().flinging);await P.page.waitForTimeout(100);if(k===0)await nowrap('on + reset shown')}
   let S=await st0(P);st=await P.page.evaluate(()=>window.__SW.stats());const champId=S.live[0].id;
-  check(`${kind}: remove picks counted + champion crowned`,S.champ&&st.spins===44&&st.champs===1&&st.slots[champId].champs===1,JSON.stringify({spins:st.spins,champs:st.champs}));
+  check(`${kind}: remove picks counted as spins, only champion gets +1 win & crown`,S.champ&&st.spins===44&&st.champs===1&&st.slots[champId].champs===1&&st.slots[champId].wins===(exp.e[champId]||0)+1&&Object.values(st.slots).reduce((a,x)=>a+x.wins,0)===41&&st.last===champId,JSON.stringify({spins:st.spins,champs:st.champs}));
   await tap(P,'#winClose');await tap(P,'#spinBtn');st=await P.page.evaluate(()=>window.__SW.stats());check(`${kind}: re-showing champion doesn't double count`,st.champs===1);await tap(P,'#winClose');
   await tap(P,'#toBoard');check(`${kind}: crown shown`,(await P.page.locator(`.lb[data-id="${champId}"] .c`).innerText())==='👑1');await shot(P,pre+'15-leaderboard-crown.png');
   await tap(P,'#boardReset');await shot(P,pre+'16-reset-confirm.png');await tap(P,'#askNo');st=await P.page.evaluate(()=>window.__SW.stats());check(`${kind}: reset cancel keeps`,st.spins===44);
@@ -133,6 +133,69 @@ async function spinAndCheck(P,label,how){const before=await st(P);
   await tap(P,'#toBoard');await layout(P,'leaderboard wheel2');
   check(`${kind}: leaderboard no console errors / network`,!P.errors.length,P.errors.join('; '));await ctx.close()}
 
+
+ // Remove Winner leaderboard accuracy: intermediate landings are spins but NOT wins; only the last slot standing wins (+ crown)
+ const runRemove=P=>P.page.evaluate(async()=>{window.__SW.setSpeed(400);const wait=f=>new Promise(r=>{const g=()=>f()?r():setTimeout(g,2);g()});
+   for(let g=0;g<100;g++){if(!window.__SW.state().win)document.getElementById('spinBtn').click();await wait(()=>window.__SW.state().win);if(window.__SW.state().champ)break;document.getElementById('winClose').click();await wait(()=>!window.__SW.state().flinging);}
+   window.__SW.setSpeed(6);return window.__SW.state().live[0].id});
+ const sumWins=o=>Object.values(o.slots).reduce((a,x)=>a+x.wins,0);
+ const boardRows=P=>P.page.$$eval('#boardList .lb',es=>es.map(e=>({id:e.dataset.id,rk:e.querySelector('.rk').textContent,c:e.querySelector('.c').textContent,w:+e.querySelector('.w').textContent,retired:e.classList.contains('retired'),t:e.querySelector('.chip').textContent})));
+ const newRemoveWheel=async(P,n)=>{await tap(P,'#toWheels');await tap(P,'#newWheel');await tap(P,`#presets [data-n="${n}"]`);await tap(P,'#editDone');if(!(await st(P)).settings.remove)await tap(P,'#remBtn')};
+ for(const kind of ['iphone','desktop']){const ctx=await newCtx(b,kind);const P=await open(ctx,kind);const pre=kind==='iphone'?'':'desk-';
+  // scenario 1: 10 slots, full Remove Winner run (screenshot 1)
+  await newRemoveWheel(P,10);let champ=await runRemove(P);let S=await st(P),o=await P.page.evaluate(()=>window.__SW.stats());
+  check(`${kind}: 10-slot remove run → champion screen, 9 slots removed`,S.win&&S.champ&&S.n===1&&S.picked.length===9);
+  check(`${kind}: 10-slot stats: spins 9, champs 1, sum of wins 1, champion 1 win/1 crown, last=champion`,o.spins===9&&o.champs===1&&sumWins(o)===1&&o.slots[champ].wins===1&&o.slots[champ].champs===1&&o.last===champ,JSON.stringify({spins:o.spins,champs:o.champs,sum:sumWins(o)}));
+  await tap(P,'#winClose');await tap(P,'#toBoard');let rows=await boardRows(P);
+  check(`${kind}: 10-slot board: champion row 🥇 👑1 and 1 win, first`,rows.length===10&&rows[0].id===champ&&rows[0].rk==='🥇'&&rows[0].c==='👑1'&&rows[0].w===1);
+  check(`${kind}: 10-slot board: 9 others 0 wins, no crown; wins column sums to 1`,rows.slice(1).every(r=>r.w===0&&r.c===''&&r.rk==='·')&&rows.reduce((a,r)=>a+r.w,0)===1);
+  check(`${kind}: 10-slot board totals: 9 spins, 1 champ, last=champion`,(await P.page.locator('#totSpins').innerText())==='9'&&(await P.page.locator('#totChamps').innerText())==='1'&&(await P.page.locator('#lastWin').innerText()).includes(rows[0].t));
+  await shot(P,pre+'18-leaderboard-remove-10slots.png');
+  // persistence + rename + retire keep the numbers
+  await P.page.reload();await tap(P,'#toBoard');let rows2=await boardRows(P);check(`${kind}: board identical after reload`,JSON.stringify(rows2)===JSON.stringify(rows));
+  await tap(P,'#boardBack');
+  // mid-run reset: landings are spins only, no wins; later full run still gives exactly 1 win
+  await tap(P,'#resetBtn').catch(()=>{});S=await st(P);
+  await P.page.evaluate(()=>window.__SW.setSpeed(400));
+  for(let k=0;k<3;k++){await tap(P,'#spinBtn');await P.page.waitForFunction(()=>window.__SW.state().win);await tap(P,'#winClose');await P.page.waitForFunction(()=>!window.__SW.state().flinging);}
+  o=await P.page.evaluate(()=>window.__SW.stats());check(`${kind}: 3 remove landings = +3 spins, +0 wins`,o.spins===12&&sumWins(o)===1&&o.champs===1,JSON.stringify({spins:o.spins,sum:sumWins(o)}));
+  await tap(P,'#resetBtn');S=await st(P);o=await P.page.evaluate(()=>window.__SW.stats());check(`${kind}: reset mid-run restores slots, leaves wins untouched`,S.n===10&&!S.picked.length&&sumWins(o)===1&&o.champs===1&&o.spins===12);
+  const champ2=await runRemove(P);o=await P.page.evaluate(()=>window.__SW.stats());check(`${kind}: second full run after mid-run reset: sum wins 2, champs 2, spins 21`,o.champs===2&&sumWins(o)===2&&o.spins===21&&o.last===champ2&&o.slots[champ2].champs===(champ2===champ?2:1),JSON.stringify({spins:o.spins,champs:o.champs,sum:sumWins(o)}));
+  await tap(P,'#winClose');await tap(P,'#toBoard');rows=await boardRows(P);
+  check(`${kind}: board medals sensible after 2 runs (no 0-win crown, ties share rank, wins sum 2)`,rows.reduce((a,r)=>a+r.w,0)===2&&rows.every(r=>(r.w>0||r.c)?r.rk!=='·':r.rk==='·')&&(champ===champ2?rows[0].w===2&&rows[0].rk==='🥇':rows[0].rk==='🥇'&&rows[1].rk==='🥇'&&rows[0].w===1&&rows[1].w===1),JSON.stringify(rows.slice(0,3)));
+  await tap(P,'#boardBack');
+  // scenario 2: 2 slots, full run (screenshot 2)
+  await newRemoveWheel(P,2);champ=await runRemove(P);o=await P.page.evaluate(()=>window.__SW.stats());S=await st(P);
+  check(`${kind}: 2-slot stats: spins 1, champs 1, sum wins 1, champion 1 win/1 crown`,o.spins===1&&o.champs===1&&sumWins(o)===1&&o.slots[champ].wins===1&&o.slots[champ].champs===1&&o.last===champ,JSON.stringify(o));
+  await tap(P,'#winClose');await tap(P,'#toBoard');rows=await boardRows(P);
+  check(`${kind}: 2-slot board: champion 🥇 👑1 with 1 win; other 0 and a dot`,rows.length===2&&rows[0].id===champ&&rows[0].rk==='🥇'&&rows[0].c==='👑1'&&rows[0].w===1&&rows[1].w===0&&rows[1].rk==='·'&&rows[1].c==='');
+  check(`${kind}: 2-slot board totals 1 spin, 1 champ`,(await P.page.locator('#totSpins').innerText())==='1'&&(await P.page.locator('#totChamps').innerText())==='1');
+  await shot(P,pre+'19-leaderboard-remove-2slots.png');await tap(P,'#boardBack');
+  // champion keeps its win through rename, and when the slot is deleted it shows as retired with its win
+  const idx=S.wheel.slots.findIndex(x=>x.id===champ);await tap(P,'#toEdit');await tap(P,`.slot[data-i="${idx}"]`);await P.page.fill('#slotText','Boss');await tap(P,'#slotOk');await tap(P,'#editDone');
+  await tap(P,'#toBoard');rows=await boardRows(P);check(`${kind}: renamed champion keeps 1 win + crown`,rows[0].id===champ&&rows[0].t.includes('Boss')&&rows[0].w===1&&rows[0].c==='👑1');await tap(P,'#boardBack');
+  // normal mode unchanged: each landing = 1 win + 1 spin
+  await tap(P,'#remBtn');o=await P.page.evaluate(()=>window.__SW.stats());
+  for(let k=0;k<5;k++){await spinAndCheck(P,'normal '+k,'btn');await tap(P,'#winClose')}
+  const o3=await P.page.evaluate(()=>window.__SW.stats());check(`${kind}: normal mode after remove runs: +5 spins, +5 wins, crowns unchanged`,o3.spins===o.spins+5&&sumWins(o3)===sumWins(o)+5&&o3.champs===1);
+  check(`${kind}: remove-wins leaderboard no console errors / network`,!P.errors.length,P.errors.join('; '));await ctx.close()}
+ // migration: saved data from before the fix is kept exactly as is (old data cannot tell Remove landings from normal spins), never re-credited on reload
+ for(const kind of ['iphone','desktop']){const ctx=await newCtx(b,kind);const P=await open(ctx,kind);
+  const old={wheels:[{id:'w1',name:'Old',slots:['a','b','c'].map((id,i)=>({id,text:'S'+(i+1),color:['#ff4d6d','#29a8ff','#8ee03b'][i],emoji:''}))}],cur:'w1',settings:{remove:true},
+    stats:{w1:{spins:2,champs:1,last:'c',slots:{a:{wins:1,champs:0,text:'S1',emoji:'',color:'#ff4d6d'},b:{wins:0,champs:1,text:'S2',emoji:'',color:'#29a8ff'},c:{wins:1,champs:0,text:'S3',emoji:'',color:'#8ee03b'}}}}};
+  await P.page.evaluate(d=>localStorage.setItem('spinwheel.v1',JSON.stringify(d)),old);
+  for(let k=0;k<3;k++){await P.page.reload();await P.page.evaluate(()=>window.__SW.setSpeed(400))}
+  let o=await P.page.evaluate(()=>window.__SW.stats());
+  check(`${kind}: migration: old saved stats unchanged after 3 reloads (no double credit)`,JSON.stringify(o)===JSON.stringify(old.stats.w1)&&sumWins(o)===2);
+  const saved=await P.page.evaluate(()=>JSON.parse(localStorage.getItem('spinwheel.v1')));check(`${kind}: migration: stored data intact`,JSON.stringify(saved.stats)===JSON.stringify(old.stats)&&JSON.stringify(saved.wheels)===JSON.stringify(old.wheels));
+  await tap(P,'#toBoard');let rows=await boardRows(P);const rb=rows.find(r=>r.id==='b');
+  check(`${kind}: migration: old crowned champion with 0 wins shows medal + crown, not a dot`,rb.rk!=='·'&&rb.c==='👑1'&&rb.w===0,JSON.stringify(rows));
+  check(`${kind}: migration: old board ranking`,rows[0].w===1&&rows[1].w===1&&rows[0].rk==='🥇'&&rows[1].rk==='🥇'&&rows[2].id==='b'&&rows[2].rk==='🥉');
+  await shot(P,(kind==='iphone'?'':'desk-')+'20-leaderboard-migrated.png');await tap(P,'#boardBack');
+  // new rule applies going forward on the old data
+  const ch=await runRemove(P);o=await P.page.evaluate(()=>window.__SW.stats());
+  check(`${kind}: migration: new Remove run on old data → +2 spins, +1 win (champion), +1 crown`,o.spins===4&&o.champs===2&&sumWins(o)===3&&o.last===ch&&o.slots[ch].champs===(ch==='b'?2:1),JSON.stringify(o));
+  check(`${kind}: migration: no console errors / network`,!P.errors.length,P.errors.join('; '));await ctx.close()}
  // iOS touch-scroll regression: 50 slots with wins, real touch swipe on leaderboard
  {const ctx=await newCtx(b,'iphone');const P=await open(ctx,'iphone');const cdp=await ctx.newCDPSession(P.page);
   await tap(P,'#toEdit');await tap(P,'#presets [data-n="50"]');await tap(P,'#editDone');

@@ -46,15 +46,16 @@ function spin(dir,power){if(spinning||fling)return;const n=live().length;if(n<2)
   anim={win,target};
   (function step(now){const t=Math.min(1,(now-t0)/D),e=1-Math.pow(1-t,3.2);rot=r0+(target-r0)*e;onRot();
     if(t<1)requestAnimationFrame(step);else{rot=mod(target,TAU);spinning=false;draw();lastWin=indexAt(rot,n);anim=null;announce(lastWin)}})(t0)}
-function announce(i){const s=live()[i];Board.record(cur(),s,false);showWin(s,false)}
+let pendingRemove=false; // Remove Winner mode at the moment of the landing: that pick is NOT a win; only the last slot standing wins
+function announce(i){const s=live()[i];pendingRemove=!!data.settings.remove;Board.record(cur(),s,pendingRemove?'landing':'win');showWin(s,false)}
 function showWin(s,champ){$('winHead').textContent=champ?'🏆 Champion!':'🎉 It\'s…';const b=$('winBadge');b.style.background=s.color;b.style.color=inkFor(s.color);
   b.innerHTML='';if(s.emoji){const e=document.createElement('span');e.className='e';e.textContent=s.emoji;b.appendChild(e)}b.appendChild(document.createTextNode(s.text||(s.emoji?'':'?')));
   b.style.fontSize=champ?'54px':'44px';$('againBtn').textContent=champ?'🔁 Reset wheel':'🔄 Spin again';$('winOv').dataset.champ=champ?'1':'';
   $('winOv').classList.add('on');champ?Sound.champ():Sound.win();Confetti.run($('confetti'),[s.color,'#ffc83d','#ffffff','#ff4dae','#29a8ff','#8ee03b'],champ)}
-function celebrate(counted){const s=live()[0];if(!s)return;if(!counted)Board.record(cur(),s,true);showWin(s,true)}
+function celebrate(counted){const s=live()[0];if(!s)return;if(!counted)Board.record(cur(),s,'champ');showWin(s,true)}
 function closeWin(again){const champ=$('winOv').dataset.champ==='1';$('winOv').classList.remove('on');Confetti.stop();
   if(champ){if(again){resetSession();rot=0;layout()}return}
-  if(data.settings.remove&&lastWin>=0&&live().length>1){removeWinner(lastWin,()=>{if(live().length<2)celebrate();else if(again)spin(1,1)})}
+  if(pendingRemove&&lastWin>=0&&live().length>1){removeWinner(lastWin,()=>{if(live().length<2)celebrate();else if(again)spin(1,1)})}
   else if(again)spin(1,1)}
 function removeWinner(i,done){const s=sess(),t0=performance.now(),D=650/speed;Sound.pop();
   (function step(now){const t=Math.min(1,(now-t0)/D);fling={fling:i,flingT:t};draw();
