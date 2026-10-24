@@ -136,9 +136,9 @@ async function spinAndCheck(P,label,how){const before=await st(P);
  // iOS touch-scroll regression: 50 slots with wins, real touch swipe on leaderboard
  {const ctx=await newCtx(b,'iphone');const P=await open(ctx,'iphone');const cdp=await ctx.newCDPSession(P.page);
   await tap(P,'#toEdit');await tap(P,'#presets [data-n="50"]');await tap(P,'#editDone');
-  await P.page.evaluate(async()=>{window.__SW.setSpeed(400);for(let k=0;k<150;k++){document.getElementById('spinBtn').click();await new Promise(r=>{const f=()=>window.__SW.state().win?r():setTimeout(f,2);f()})}});
+  await P.page.evaluate(async()=>{window.__SW.setSpeed(400);for(let k=0;k<150;k++){document.getElementById('winClose').click();await new Promise(r=>{const f=()=>!window.__SW.state().win&&!window.__SW.state().flinging?r():setTimeout(f,2);f()});document.getElementById('spinBtn').click();await new Promise(r=>{const f=()=>window.__SW.state().win?r():setTimeout(f,2);f()})}});
   await P.page.waitForSelector('#winOv.on');await P.page.waitForTimeout(300);await tap(P,'#winClose');await P.page.waitForFunction(()=>!window.__SW.state().flinging&&!document.querySelector('.ov.on'));await tap(P,'#toBoard');
-  const nRows=await P.page.locator('#boardList .lb').count();check('iphone: 50-slot board renders rows',nRows>=40,String(nRows));
+  const nRows=await P.page.locator('#boardList .lb').count();check('iphone: 50-slot board renders rows',nRows>=40,String(nRows));const sp=await P.page.evaluate(()=>window.__SW.stats().spins);check('iphone: 150 wins recorded for scroll test',sp===150,String(sp));
   const swipe=async(sel)=>{const bb=await P.page.locator(sel).boundingBox();const x=bb.x+bb.width/2,y0=bb.y+bb.height*0.85,y1=bb.y+bb.height*0.1;
     await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y:y0}]});for(let k=1;k<=10;k++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:y0+(y1-y0)*k/10}]});await P.page.waitForTimeout(16)}
     await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await P.page.waitForTimeout(400)};
