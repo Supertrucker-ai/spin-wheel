@@ -118,7 +118,8 @@ $('resetBtn').onclick=()=>{if(spinning||fling)return;resetSession();rot=0;lastWi
 $('againBtn').onclick=()=>closeWin(true);$('winClose').onclick=()=>closeWin(false);
 addEventListener('resize',()=>{if($('play').classList.contains('on'))layout()});
 document.addEventListener('gesturestart',e=>e.preventDefault());
-document.addEventListener('touchmove',e=>{if(!e.target.closest('#slotList,#wheelList,.emo,#picked'))e.preventDefault()},{passive:false});
+// only the wheel swallows touchmove (for flicks); every list/panel keeps native touch scrolling
+document.addEventListener('touchmove',e=>{if(e.target.closest&&e.target.closest('#wheelWrap'))e.preventDefault()},{passive:false});
 save();show('play');
 // ---- test/build hooks ----
 window.__SW={stats:()=>JSON.parse(JSON.stringify(Board.get(cur()))),state:()=>{const s=sess();return{screen:document.querySelector('.screen.on').id,rot,spinning,flinging:!!fling,n:live().length,lastWin,under:indexAt(rot,live().length),live:live().map(x=>({...x})),picked:s.picked.slice(),active:s.active.slice(),wheel:JSON.parse(JSON.stringify(cur())),wheels:data.wheels.length,settings:{...data.settings},win:$('winOv').classList.contains('on'),champ:$('winOv').dataset.champ==='1',winText:$('winBadge').textContent}},

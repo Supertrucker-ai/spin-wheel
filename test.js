@@ -132,6 +132,28 @@ async function spinAndCheck(P,label,how){const before=await st(P);
   await tap(P,'#toWheels');await tap(P,'.wrow:nth-child(2) .load');s2=await P.page.evaluate(()=>window.__SW.stats());check(`${kind}: other wheel untouched by reset`,s2.spins===1);
   await tap(P,'#toBoard');await layout(P,'leaderboard wheel2');
   check(`${kind}: leaderboard no console errors / network`,!P.errors.length,P.errors.join('; '));await ctx.close()}
+
+ // iOS touch-scroll regression: 50 slots with wins, real touch swipe on leaderboard
+ {const ctx=await newCtx(b,'iphone');const P=await open(ctx,'iphone');const cdp=await ctx.newCDPSession(P.page);
+  await tap(P,'#toEdit');await tap(P,'#presets [data-n="50"]');await tap(P,'#editDone');
+  await P.page.evaluate(async()=>{window.__SW.setSpeed(400);for(let k=0;k<150;k++){document.getElementById('spinBtn').click();await new Promise(r=>{const f=()=>window.__SW.state().win?r():setTimeout(f,2);f()})}});
+  await P.page.waitForSelector('#winOv.on');await P.page.waitForTimeout(300);await tap(P,'#winClose');await P.page.waitForFunction(()=>!window.__SW.state().flinging&&!document.querySelector('.ov.on'));await tap(P,'#toBoard');
+  const nRows=await P.page.locator('#boardList .lb').count();check('iphone: 50-slot board renders rows',nRows>=40,String(nRows));
+  const swipe=async(sel)=>{const bb=await P.page.locator(sel).boundingBox();const x=bb.x+bb.width/2,y0=bb.y+bb.height*0.85,y1=bb.y+bb.height*0.1;
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y:y0}]});for(let k=1;k<=10;k++){await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x,y:y0+(y1-y0)*k/10}]});await P.page.waitForTimeout(16)}
+    await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});await P.page.waitForTimeout(400)};
+  const blocked=await P.page.evaluate(()=>{const e=new TouchEvent('touchmove',{bubbles:true,cancelable:true});document.getElementById('boardList').dispatchEvent(e);return e.defaultPrevented});
+  check('iphone: touchmove on leaderboard not prevented',!blocked);
+  await swipe('#boardList');const top1=await P.page.evaluate(()=>document.getElementById('boardList').scrollTop);check('iphone: leaderboard scrollTop changes after touch swipe',top1>0,String(top1));
+  for(let k=0;k<30;k++){await swipe('#boardList');if(await P.page.evaluate(()=>{const l=document.getElementById('boardList');return l.scrollTop+l.clientHeight>=l.scrollHeight-2}))break}
+  const bot=await P.page.evaluate(()=>{const l=document.getElementById('boardList'),r=l.lastElementChild.getBoundingClientRect(),L=l.getBoundingClientRect();return{end:l.scrollTop+l.clientHeight>=l.scrollHeight-2,vis:r.bottom<=L.bottom+1&&r.top>=L.top-1}});
+  check('iphone: bottom leaderboard row reachable by touch',bot.end&&bot.vis,JSON.stringify(bot));await shot(P,'17-leaderboard-scrolled.png');
+  const wheelBlocked=await P.page.evaluate(()=>{document.getElementById('boardBack').click();const e=new TouchEvent('touchmove',{bubbles:true,cancelable:true});document.getElementById('wheel').dispatchEvent(e);return e.defaultPrevented});
+  check('iphone: touchmove on wheel still blocked (flicks)',wheelBlocked);
+  await tap(P,'#toEdit');await swipe('#slotList');check('iphone: 50-slot editor list touch-scrolls',await P.page.evaluate(()=>document.getElementById('slotList').scrollTop>0));await tap(P,'#editDone');
+  await P.page.evaluate(()=>{for(let i=0;i<14;i++){document.getElementById('toWheels').click();document.getElementById('newWheel').click();document.getElementById('editDone').click()}document.getElementById('toWheels').click()});
+  await swipe('#wheelList');check('iphone: saved wheels list touch-scrolls',await P.page.evaluate(()=>document.getElementById('wheelList').scrollTop>0));
+  check('iphone: scroll test no console errors',!P.errors.length,P.errors.join('; '));await ctx.close()}
  // fairness: 3000 simulated plans over 5 slots via indexAt geometry in page (uses same rnd)
  const ctx=await newCtx(b,'desktop');const P=await open(ctx,'desktop');
  const fair=await P.page.evaluate(async()=>{window.__SW.setSpeed(400);const c=[0,0,0,0,0,0];for(let k=0;k<600;k++){document.getElementById('spinBtn').click();await new Promise(r=>{const f=()=>window.__SW.state().win?r():setTimeout(f,2);f()});const s=window.__SW.state();if(s.under!==s.lastWin)return 'mismatch';c[s.lastWin]++;document.getElementById('winClose').click()}return c});
